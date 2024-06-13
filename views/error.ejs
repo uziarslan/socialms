@@ -1,0 +1,18 @@
+
+<title>Error</title>
+
+<div class="container">
+  <div class="row mt-5">
+    <div class="col-6 offset-3">
+      <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Sorry!</h4>
+        <p><%= err.message %></p>
+        <hr>
+        <p class="mb-0">Error Code: <%= err.status %> </p>
+        <hr>
+        <p><%= err.stack %></p>
+      </div>
+    </div>
+  </div>
+</div>
+

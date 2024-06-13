@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>User Dashboard</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+
+  <!-- Favicon -->
+  <link href="/img/favicon.ico" rel="icon">
+
+  <!-- Google Web Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icon Font Stylesheet -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Libraries Stylesheet -->
+  <link href="/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+  <link href="/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
+  <!-- Customized Bootstrap Stylesheet -->
+  <link href="/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+  <!-- Template Stylesheet -->
+  <link href="/stylesheets/style.css" rel="stylesheet" type="text/css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+  <!-- Link to external CSS file -->
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .bold-text td {
+      font-weight: 500;
+
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="container-xxl position-relative bg-white d-flex p-0">
+    <div class="content">
+      <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
+        <a href="#" class="navbar-brand d-flex d-lg-none me-4">
+          <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
+        </a>
+        <div class="navbar-nav align-items-center ms-auto">
+          <div class="nav-item dropdown">
+          </div>
+          <div class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+              <img class="rounded-circle me-lg-2" src="<%= userData.picture.data.url %>" alt="Profile Picture" style="width: 40px; height: 40px;">
+              <span class="d-none d-lg-inline-flex"><%= userData.name%></span>
+            </a>
+          </div>
+        </div>
+      </nav>
+      <div class="container-fluid pt-4 px-4">
+        <div class="row g-4">
+          <div class="w-100">
+            <div class="bg-light text-center rounded p-4">
+              <div class="d-flex align-items-center justify-content-between mb-4">
+                <h6 class="mb-0">Personal Info:</h6>
+              </div>
+              <p><%= uD.content%></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid pt-4 px-4">
+        <div class="row g-4">
+          <div class="col-sm-12 col-xl-12">
+            <% if (albumsData.length > 0) { %>
+            <div class="cuctomSlider">
+              <% albumsData.forEach((album) => {%>
+              <% album.photos.data.forEach((photo) => { %>
+              <a href="<%= photo.images[0].source %>" target="_blank">
+                <img src="<%= photo.images[0].source %>" alt="User Photo" style="width: 200px; height: auto;">
+              </a>
+              <% }); %>
+              <% }) %>
+            </div>
+            <% } else { %>
+            <p>No photos found.</p>
+            <% } %>
+          </div>
+        </div>
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4">
+            <div class="col-sm-12 col-xl-4">
+              <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <p class="mytext">Likes</p>
+                <% if (interest && interest.length > 0) { %>
+                <p class="mytext-1"><%= interest %></p>
+                <% } else { %>
+                <p>No interests detected.</p>
+                <% } %>
+              </div>
+            </div>
+            <div class="col-sm-12 col-xl-4">
+              <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <p class="mytext">Area of Interest:</p>
+                <% if (interestsFromGroups && interestsFromGroups.length > 0){%>
+                <p class="mytext-1"><%= interestsFromGroups %></p>
+                <% } else { %>
+                <p>No interests detected.</p>
+                <% } %>
+              </div>
+            </div>
+            <div class="col-sm-12 col-xl-4">
+              <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <p class="mytext">Collected Data:</p>
+                <p class="mytext-1"><%= mostCommonWords.length %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4">
+            <div class="w-100">
+              <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <h6 class="mb-0">Frequently Used Words</h6>
+                </div>
+                <canvas id="wordCountChart" style="display: flex; justify-content: center; width:auto; height:auto; font-size: 1.2rem;"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4">
+            <div class="w-100">
+              <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <h6 class="mb-0">User Feeling's</h6>
+                </div>
+                <div class="wrapperGraph">
+                  <canvas id="sentimentChart" style="display: flex; justify-content: center; width:auto; height:auto;"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4">
+            <div class="w-100">
+              <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <h6 class="mb-0">Visualizing User's Personality</h6>
+                </div>
+                <div class="straightRow">
+                  <p class="textContent"><%= pD.content %></p>
+                  <div class="graphWrapper">
+                    <canvas id="personalityChart" style="width: auto; height:auto; font-size: 1.2rem;"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+    <script>
+      // Shuffle function to randomize array elements
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+      }
+
+      const mostCommonWordsData = <%- JSON.stringify(mostCommonWords) %>;
+
+      // Shuffle the mostCommonWordsData array randomly
+      shuffleArray(mostCommonWordsData);
+
+      // Generate a random RGB color with 50% opacity
+      const randomRGBAColor = () => {
+        const random255 = () => Math.floor(Math.random() * 256);
+        return `rgba(${random255()}, ${random255()}, ${random255()}, 0.5)`;
+      };
+
+      new Chart("wordCountChart", {
+        type: "bar"
+        , data: {
+          labels: mostCommonWordsData.map(item => item.word)
+          , datasets: [{
+            label: 'Word Count'
+            , backgroundColor: mostCommonWordsData.map(() => randomRGBAColor())
+            , borderColor: mostCommonWordsData.map(() => randomRGBAColor()), // Random border color
+            borderWidth: 1, // Set border width to 1
+            data: mostCommonWordsData.map(item => item.count)
+          }]
+        }
+        , options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+                , max: Math.max(...mostCommonWordsData.map(item => item.count))
+                , fontSize: 17
+              }
+            }]
+            , xAxes: [{
+              ticks: {
+                fontSize: 17
+              }
+            }]
+          }
+          , legend: {
+            labels: {
+              fontSize: 17
+            }
+          }
+        }
+      });
+
+      const sentiment = <%- JSON.stringify(sentiment) %>;
+      const sentimentScore = sentiment.score;
+
+      const sentimentChartData = {
+        labels: ['Positive Sentiment', 'Negative Sentiment']
+        , datasets: [{
+          data: [sentimentScore, 100 - sentimentScore]
+          , backgroundColor: ['rgba(0, 255, 0, 1.0)', 'rgba(255, 0, 0, 1.0)']
+        }]
+      };
+
+      const sentimentChartOptions = {
+        responsive: true
+        , maintainAspectRatio: false
+      };
+
+      new Chart("sentimentChart", {
+        type: "pie"
+        , data: sentimentChartData
+        , options: sentimentChartOptions
+      });
+
+      // Personality Scores Radar Chart Data
+      const personalityScoresData = {
+        extroversion: <%= personalityScores.extroversion %>
+        , neuroticism: <%= personalityScores.neuroticism %>
+        , agreeableness: <%= personalityScores.agreeableness %>
+        , conscientiousness: <%= personalityScores.conscientiousness %>
+        , openness: <%= personalityScores.openness %>
+      , };
+
+      const data = {
+        labels: Object.keys(personalityScoresData)
+        , datasets: [{
+          data: Object.values(personalityScoresData)
+          , backgroundColor: [
+            'rgba(255, 0, 0, 0.5)', // Red for extroversion
+            'rgba(255, 165, 0, 0.5)', // Orange for neuroticism
+            'rgba(255, 255, 0, 0.5)', // Yellow for agreeableness
+            'rgba(0, 128, 0, 0.5)', // Green for conscientiousness
+            'rgba(0, 0, 255, 0.5)' // Blue for openness
+          ]
+        , }]
+      };
+
+      const config = {
+        type: 'polarArea'
+        , data: data
+        , options: {
+          responsive: true
+          , plugins: {
+            legend: false
+            , tooltip: false
+          , }
+          , elements: {
+            arc: {
+              backgroundColor: function(context) {
+
+              }
+            , }
+          }
+        }
+      };
+
+      new Chart("personalityChart", config);
+
+    </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/chart/chart.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="lib/tempusdominus/js/moment.min.js"></script>
+    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>
